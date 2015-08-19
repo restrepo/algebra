@@ -3,11 +3,13 @@ def exer_mult(expression):
     from sympy import init_printing; init_printing() 
     from IPython.display import display, Math, Latex
     a, b, c, x, y, z = sym.symbols("a b c x y z")
+    evexpr=sym.expand(eval(expression))
     print 'Expand the expression:'
     display(Math(str(expression).replace('**','^').replace('*','')))
     result=raw_input()
-    if sym.expand(eval(expression))== eval(result): 
-        return "Good job!"
+    if evexpr== eval(result): 
+        print "Good job! Final result:"
+        return eval(result)
     else:
         print('WRONG!!!\nRight result:')
         return sym.expand(expression)
@@ -18,7 +20,7 @@ def exer_mult_step(expression):
     from sympy import init_printing; init_printing() 
     from IPython.display import display, Math, Latex
     a, b, c, x, y, z = sym.symbols("a b c x y z")
-    
+    evexpr=sym.expand(eval(expression))
     expression=str(expression)
     print 'Expand the following expression step by step:'
     display(Math(str(expression).replace('**','^').replace('*','')))
@@ -41,8 +43,8 @@ def exer_mult_step(expression):
     print 'Reduce the expression:' 
     display(Math(expandednr.replace('**','^').replace('*','')))
     result=raw_input()
-    if sym.expand(eval(expression))== eval(result): 
-        print "Good job!, final result"
+    if evexpr== eval(result): 
+        print "Good job!, final result:"
         return eval(result)
         
     else:
