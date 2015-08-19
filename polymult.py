@@ -3,6 +3,7 @@ def exer_mult(expression):
     from sympy import init_printing; init_printing() 
     from IPython.display import display, Math, Latex
     a, b, c, x, y, z = sym.symbols("a b c x y z")
+    expression=str(expression)
     evexpr=sym.expand(eval(expression))
     print 'Expand the expression:'
     display(Math(str(expression).replace('**','^').replace('*','')))
@@ -12,7 +13,7 @@ def exer_mult(expression):
         return eval(result)
     else:
         print('WRONG!!!\nRight result:')
-        return sym.expand(expression)
+        return sym.expand(eval(expression))
     
 def exer_mult_step(expression):
     import re
@@ -20,8 +21,8 @@ def exer_mult_step(expression):
     from sympy import init_printing; init_printing() 
     from IPython.display import display, Math, Latex
     a, b, c, x, y, z = sym.symbols("a b c x y z")
-    evexpr=sym.expand(eval(expression))
     expression=str(expression)
+    evexpr=sym.expand(eval(expression))
     print 'Expand the following expression step by step:'
     display(Math(str(expression).replace('**','^').replace('*','')))
     print 'Multiply ALL the monomials:'
