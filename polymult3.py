@@ -18,11 +18,13 @@ def operacion(level=1):
     right_result=sym.expand(  expression.replace('^','**') )
     if right_result==sym.expand( result.replace('^','**') ):
         display(Math(r'{\huge\text{ ¡Correcto!}}, \large\text{  ¡buen trabajo!}'))
-        kk=subprocess.Popen('aplay good.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
+        if subprocess.Popen('which aplay'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]:
+            kk=subprocess.Popen('aplay good.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
         return right_result
     else:
         display(Math(r'{\large\text{ Mal}}, \large\text{ el resultado correcto es:}'))
-        kk=subprocess.Popen('aplay error.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
+        if subprocess.Popen('which aplay'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]:                
+            kk=subprocess.Popen('aplay error.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
         return right_result
     
 def exer_mult(expression):
