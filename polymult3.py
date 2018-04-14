@@ -1,3 +1,30 @@
+def operacion(level=1):
+    import subprocess
+    import sympy as sym
+    from sympy import init_printing; init_printing() 
+    from IPython.display import display, Math, Latex
+    a, b, c, x, y, z = sym.symbols("a b c x y z")
+    display(Math(r'\large\text{ Escriba una operación:}'))
+    expression=input()
+    if level==0:
+         expression=expression.replace('x','*')
+    tex_expr=str(expression).replace('**','^')
+    if level==0:
+        tex_expr=tex_expr.replace('*',r'\times ') 
+    display(Math(  tex_expr  ))
+    display(Math(r'\large\text {Escriba el resultado:}'))
+    result=input()
+    #right_result=sym.expand(eval( expression.replace('^','**') ))
+    right_result=sym.expand(  expression.replace('^','**') )
+    if right_result==sym.expand( result.replace('^','**') ):
+        display(Math(r'{\huge\text{ ¡Correcto!}}, \large\text{  ¡buen trabajo!}'))
+        kk=subprocess.Popen('aplay good.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
+        return right_result
+    else:
+        display(Math(r'{\large\text{ Mal}}, \large\text{ el resultado correcto es:}'))
+        kk=subprocess.Popen('aplay error.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
+        return right_result
+    
 def exer_mult(expression):
     import sympy as sym
     from sympy import init_printing; init_printing() 
@@ -7,7 +34,7 @@ def exer_mult(expression):
     evexpr=sym.expand(eval(expression.replace('^','**')))
     print ('Expand the expression:')
     display(Math(str(expression).replace('**','^').replace('*','')))
-    result=raw_input()
+    result=input()
     if evexpr== eval(result.replace('^','**')): 
         print ("Good job! Final result:")
         return eval(result)
@@ -55,7 +82,7 @@ def exer_mult_step(expression):
                     l=jointerms(terms)
                     display(Math(l.replace('**','^').replace('*','')))
                     terms[1][j]=ncj
-                    newterm=raw_input()
+                    newterm=input()
                     if re.search('^-',newterm):
                         newterm=newterm
                     else:
@@ -67,7 +94,7 @@ def exer_mult_step(expression):
         
     print ('Reduce the expression:' )
     display(Math(expandednr.replace('**','^').replace('*','')))
-    result=raw_input()
+    result=input()
     if evexpr== eval(result.replace('^','**')): 
         print ("Good job!, final result:")
         return eval(result.replace('^','**'))
@@ -95,7 +122,7 @@ def exer_mult_step_old(expression):
         for j in terms[1]:
             if i and j: #mo empty strings
                 print ( '(%s)*(%s)' %(i,j) )
-                newterm=raw_input()
+                newterm=input()
                 if re.search('^-',newterm):
                     newterm=newterm
                 else:
@@ -104,7 +131,7 @@ def exer_mult_step_old(expression):
                 expandednr=re.sub('^\+','',expandednr)
     print ( 'Reduce the expression:' )
     display(Math(expandednr.replace('**','^').replace('*','')))
-    result=raw_input()
+    result=input()
     if evexpr== eval(result): 
         print ( "Good job!, final result:")
         return eval(result)
