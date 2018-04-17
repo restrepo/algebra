@@ -1,32 +1,151 @@
-def operacion(level=1):
+def fix_text(text,**kwargs):
+    import re
+    level=1
+    try:
+        level=kwargs['level']
+    except:
+        pass
+
+    vars='abcxyz' #TODO: check sympy for defined symbols
+    if level==0: # replace x vy *
+        text=text.replace('x','*') 
+        
+    text=re.sub('([0-9])([{}])'.format(vars),r'\1*\2',text)
+    text=re.sub('([0-9])(\()'.format(vars),r'\1*\2',text)
+
+    return text
+
+def fix_latex_output(text,**kwargs):
+    '''
+    The input text can be a string or a synmpy object.
+    A sympy object accept str conersion!
+    '''
+    text=fix_text(text,**kwargs)
+    level=1
+    try:
+        level=kwargs['level']
+    except:
+        pass
+
+    text=str(text).replace('**','^')
+    if level==0:
+        text=text.replace('*',r'\times ')
+    return text
+
+
+def check_result(expression,result,**kwargs):
+    import subprocess
+    import sympy as sym
+    from sympy import init_printing; init_printing() 
+    from IPython.display import display, Math, Latex, HTML
+
+    level=1
+    try:
+        level=kwargs['level']
+    except:
+        pass
+    
+    if level==0:
+        a, b, c, y, z = sym.symbols("a b c y z")
+    else:
+        a, b, c, x, y, z = sym.symbols("a b c x y z")
+
+
+    expression=fix_text(expression,**kwargs)
+    result=fix_text(result,**kwargs)
+
+    tex_expr=fix_latex_output(expression,**kwargs)
+    display(HTML(r'<hr><b>Comprobando</b>'))
+    #print('Comprobando: ',end='')
+    display(Math( tex_expr  ))
+    display(HTML(r'<hr>'))
+    right_result=sym.expand(  expression.replace('^','**') )
+    if right_result==sym.expand( result.replace('^','**') ):
+        display(Math(r'{\huge\text{ ¡Correcto!}}, \large\text{  ¡buen trabajo!}'))
+        display(Math(  fix_latex_output( str(right_result),**kwargs ) ))
+        try:
+            kk=subprocess.Popen('aplay good.wav'.split(),stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE).communicate()
+        except:
+            pass
+
+        return right_result
+    else:
+        display(Math(r'{\large\text{ Mal}}, \large\text{ el resultado correcto es:}'))
+        display(Math(  fix_latex_output( str(right_result),**kwargs ) ))
+        try:
+            kk=subprocess.Popen('aplay error.wav'.split(),stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE).communicate()
+        except:
+            pass
+
+        return right_result
+    
+
+
+def operacion(**kwargs):
+    '''
+    Options:
+     level=N
+     N=0: x and ^ are accepted.
+     N=1: ^ is accepted
+    '''
+    import re
     import subprocess
     import sympy as sym
     from sympy import init_printing; init_printing() 
     from IPython.display import display, Math, Latex
-    a, b, c, x, y, z = sym.symbols("a b c x y z")
+    level=1
+    try:
+        level=kwargs['level']
+    except:
+        pass
+    
+    if level==0:
+        a, b, c, y, z = sym.symbols("a b c y z")
+    else:
+        a, b, c, x, y, z = sym.symbols("a b c x y z")
+        
     display(Math(r'\large\text{ Escriba una operación:}'))
     expression=input()
-    if level==0:
-         expression=expression.replace('x','*')
-    tex_expr=str(expression).replace('**','^')
-    if level==0:
-        tex_expr=tex_expr.replace('*',r'\times ') 
+
+    tex_expr=fix_latex_output(expression,**kwargs)
     display(Math(  tex_expr  ))
     display(Math(r'\large\text {Escriba el resultado:}'))
     result=input()
-    #right_result=sym.expand(eval( expression.replace('^','**') ))
-    right_result=sym.expand(  expression.replace('^','**') )
-    if right_result==sym.expand( result.replace('^','**') ):
-        display(Math(r'{\huge\text{ ¡Correcto!}}, \large\text{  ¡buen trabajo!}'))
-        if subprocess.Popen('which aplay'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]:
-            kk=subprocess.Popen('aplay good.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
-        return right_result
-    else:
-        display(Math(r'{\large\text{ Mal}}, \large\text{ el resultado correcto es:}'))
-        if subprocess.Popen('which aplay'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0]:                
-            kk=subprocess.Popen('aplay error.wav'.split(),stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
-        return right_result
+
+    return check_result(expression,result,**kwargs)
     
+
+def operacion_widget(level=1):
+    import ipywidgets as widgets
+    from IPython.display import display, Math, Latex # Used to display widgets in the notebook
+
+    #display(Math(r'\large\text{ Escriba una operación:}'))
+    expression=widgets.Text(
+        #description='Esciba una operación:'
+        )
+    result    =widgets.Text(
+        #description='Escriba el resultado:'
+        )
+    display( widgets.HTMLMath(
+        #value=r"Some math and <i>HTML</i>: \(x^2\) and $$\frac{x+1}{x-1}$$",
+        #placeholder='Some HTML',
+        description='Escriba una <b>operación:<b/>',
+    ) )
+    display(expression)
+    #display(Math(r'\large\text {Escriba el resultado:}'))
+    display( widgets.HTMLMath(
+        value=r"y pulse <code>Enter</code>",
+        #placeholder='Some HTML',
+        description='Escriba el <b>resultado:<b/>',
+    ) )
+    display(result)
+    def handle_submit(sender):
+        check_result(expression.value,result.value,level=level)
+
+    return result.on_submit(handle_submit)    
+
 def exer_mult(expression):
     import sympy as sym
     from sympy import init_printing; init_printing() 
