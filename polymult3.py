@@ -129,16 +129,16 @@ def operacion_widget(level=1):
         #description='Escriba el resultado:'
         )
     display( widgets.HTMLMath(
-        #value=r"Some math and <i>HTML</i>: \(x^2\) and $$\frac{x+1}{x-1}$$",
+        value=r"una <b>operación:<b/>",
         #placeholder='Some HTML',
-        description='Escriba una <b>operación:<b/>',
+        description='Escriba',
     ) )
     display(expression)
     #display(Math(r'\large\text {Escriba el resultado:}'))
     display( widgets.HTMLMath(
-        value=r"y pulse <code>Enter</code>",
+        value=r" el <b>resultado:<b/> y pulse <code>Enter</code>",
         #placeholder='Some HTML',
-        description='Escriba el <b>resultado:<b/>',
+        description='Escriba',
     ) )
     display(result)
     def handle_submit(sender):
