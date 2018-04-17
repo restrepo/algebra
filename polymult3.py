@@ -117,7 +117,49 @@ def operacion(**kwargs):
     return check_result(expression,result,**kwargs)
     
 
+
 def operacion_widget(level=1):
+    import ipywidgets as widgets
+    from IPython.display import display, Math, Latex, clear_output  # Used to display widgets in the notebook
+
+    #display(Math(r'\large\text{ Escriba una operación:}'))
+    expression=widgets.Text(
+        #description='Esciba una operación:'
+        )
+    result    =widgets.Text(
+        #description='Escriba el resultado:'
+        )
+    display( widgets.HTMLMath(
+        value=r"Escriba una <b>operación:<b/>",
+        #placeholder='Some HTML',
+        #description='Escriba',
+    ) )
+    display(expression)
+    #display(Math(r'\large\text {Escriba el resultado:}'))
+    display( widgets.HTMLMath(
+        value=r"Escriba el <b>resultado:<b/>",
+        #placeholder='Some HTML',
+        #description='Escriba',
+    ) )
+    display(result)
+
+    button = widgets.Button( description="Comprobar")
+    clear_button = widgets.Button( description="Borrar")
+    
+    def on_button_clicked(b):    
+        check_result(expression.value,result.value,level=level)
+
+    def on_button_clean(b):    
+        clear_output()
+            
+    display( widgets.HBox( [button,clear_button] ) )
+    button.on_click(on_button_clicked)
+    clear_button.on_click(on_button_clean)        
+    #return result.on_submit(handle_submit)    
+
+
+
+def operacion_widget_old(level=1):
     import ipywidgets as widgets
     from IPython.display import display, Math, Latex # Used to display widgets in the notebook
 
@@ -145,7 +187,7 @@ def operacion_widget(level=1):
         check_result(expression.value,result.value,level=level)
 
     return result.on_submit(handle_submit)    
-
+    
 def exer_mult(expression):
     import sympy as sym
     from sympy import init_printing; init_printing() 
